@@ -1,5 +1,6 @@
 package co.edu.uniandes.dse.parcial1.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.spi.ErrorMessage;
@@ -63,6 +64,19 @@ public class RutaEstacionService
 			throw new IllegalOperationException("La estacion no esta asociada a la ruta");
 		
 		return estacionEntity.get();
+	}
+
+    @Transactional
+	public List<EstacionEntity> getEstaciones(Long rutaId) throws EntityNotFoundException 
+    {
+		log.info("Inicia proceso de consultar todas las estaciones de la ruta con id = {0}", rutaId);
+		Optional<RutaEntity> rutaEntity = rutaRepository.findById(rutaId);
+
+		if (rutaEntity.isEmpty())
+			throw new EntityNotFoundException("Ruta no encontrada");
+
+            log.info("Termina proceso de consultar todas las estaciones de la ruta con id = {0}", rutaId);
+		return rutaEntity.get().getEstaciones();
 	}
 
     @Transactional

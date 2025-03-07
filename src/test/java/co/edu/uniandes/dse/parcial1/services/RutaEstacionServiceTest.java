@@ -2,6 +2,7 @@ package co.edu.uniandes.dse.parcial1.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,5 +91,15 @@ public class RutaEstacionServiceTest
 		assertEquals(lastEstacion.getDireccion(), newEstacion.getDireccion());
 		assertEquals(lastEstacion.getCapacidad(), newEstacion.getCapacidad());
 
+	}
+
+    @Test
+	void testRemoveEstacionRuta() throws EntityNotFoundException, IllegalOperationException 
+    {
+		for (EstacionEntity estacion : estacionList) 
+        {
+			rutaEstacionService.removeEstacionRuta(ruta.getId(), estacion.getId());
+		}
+		assertTrue(rutaEstacionService.getEstaciones(ruta.getId()).isEmpty());
 	}
 }
