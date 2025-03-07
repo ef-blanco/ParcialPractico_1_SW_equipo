@@ -2,6 +2,7 @@ package co.edu.uniandes.dse.parcial1.services;
 
 import java.util.Optional;
 
+import org.modelmapper.spi.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,27 @@ public class RutaEstacionService
            throw new IllegalOperationException("No se pueden aniadir mas rutas a la estacion");
 		rutaEntity.get().getEstaciones().add(estacionEntity.get());
 		log.info("Termina el proceso de asociarle una estacion a la ruta con id = {0}", rutaId);
+		return estacionEntity.get();
+	}
+
+    @Transactional
+	public EstacionEntity getEstacion(Long rutaId, Long estacionId)
+			throws EntityNotFoundException, IllegalOperationException 
+    {
+		log.info("Inicia proceso de consultar una estacion de la ruta con id = {0}", rutaId);
+		Optional<EstacionEntity> estacionEntity = estacionRepository.findById(estacionId);
+		Optional<RutaEntity> rutaEntity = rutaRepository.findById(rutaId);
+
+		if (estacionEntity.isEmpty())
+			throw new EntityNotFoundException("Estacion no encontrada");
+
+		if (rutaEntity.isEmpty())
+			throw new EntityNotFoundException("Ruta no encontrada");
+        log.info("Termina proceso de consultar una estacion de la ruta con id = {0}", rutaId);
+
+		if (!rutaEntity.get().getEstaciones().contains(estacionEntity.get()))
+			throw new IllegalOperationException("La estacion no esta asociada a la ruta");
+		
 		return estacionEntity.get();
 	}
 
