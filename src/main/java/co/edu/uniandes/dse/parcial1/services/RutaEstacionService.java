@@ -44,7 +44,7 @@ public class RutaEstacionService
 	}
 
     @Transactional
-    public void removeEstacionRuta(Long rutaId, Long estacionId) throws EntityNotFoundException 
+    public void removeEstacionRuta(Long rutaId, Long estacionId) throws EntityNotFoundException, IllegalOperationException 
     {
 		log.info("Inicia proceso de borrar una estacion de la ruta con id = {0}", rutaId);
 		Optional<RutaEntity> rutaEntity = rutaRepository.findById(rutaId);
@@ -55,6 +55,9 @@ public class RutaEstacionService
 
 		if (rutaEntity.isEmpty())
 			throw new EntityNotFoundException("La ruta no se encontro");
+
+        if((rutaEntity.get().getTipo().equals("nocturna"))&&(rutaEntity.get().getEstaciones().size()==1))
+          throw new IllegalOperationException("No se puede eliminar la asociación ya que la única ruta asociada a la estacion es nocturna");
 
 		rutaEntity.get().getEstaciones().remove(estacionEntity.get());
 
