@@ -44,5 +44,22 @@ public class RutaEstacionService
 		return estacionEntity.get();
 	}
 
+    @Transactional
+    public void removeEstacionRuta(Long rutaId, Long estacionId) throws EntityNotFoundException 
+    {
+		log.info("Inicia proceso de borrar una estacion de la ruta con id = {0}", rutaId);
+		Optional<RutaEntity> rutaEntity = rutaRepository.findById(rutaId);
+		Optional<EstacionEntity> estacionEntity = estacionRepository.findById(estacionId);
+
+		if (estacionEntity.isEmpty())
+			throw new EntityNotFoundException("La estacion no se encontro");
+
+		if (rutaEntity.isEmpty())
+			throw new EntityNotFoundException("La ruta no se encontro");
+
+		rutaEntity.get().getEstaciones().remove(estacionEntity.get());
+
+		log.info("Termina proceso de borrar una estacion de la ruta con id = {0}", rutaId);
+	}
 
 }
